@@ -20,19 +20,19 @@
     <div class="row container">
       <div class="col-12 col-md-6 my-3">
         <h5>Welcome !!</h5>
-        <h1 class="text-primary">Gaurav Sahitya</h1>
+        <h1 class="text-primary"> <%= user.Name %> </h1>
       </div>
       <div class="text-md-end col-12 col-md-6 my-3">
         <h5>Credit Score</h5>
-        <h2 id="c_Score_holder">0.9</h2>
+        <h2 id="c_Score_holder"><%= user.c_Score %></h2>
       </div>
       <div class="col-lg-6 col-12">
-        <form method="post">
+        <form method="post" action="/txn">
           <div class="my-3 row">
-            <label for="amount" class="form-label fs-3">Amount: 10000</label>
-            <input type="hidden" name=email value="">
-            <input type="hidden" name="c_Score" id="c_Score" value="0.9">
-            <input type="number" class="form-control" name="amount">
+            <label for="amount" class="form-label fs-3">Amount: <%= user.Balance %></label>
+            <input type="hidden" name="c_Score" id="c_Score" value=<%-user.c_Score%>>
+            <input type="number" min="100" class="form-control" name="amount" required>
+            <small id="hide" class="text-danger my-1"><%= page %></small>
             <button type="submit" name="submit" class="btn btn-warning col-6 my-3" value="Credit">Credit</button>
             <button type="submit" name="submit" class="btn btn-danger col-6 my-3" value="Debit">Debit</button>
         </form>
@@ -85,6 +85,10 @@
 
       element.classList.add(color)
     }
+
+    setTimeout(()=>{
+      document.getElementById("hide").style.display = "hidden"
+    }, 3000)
 
     update()
     </script>
