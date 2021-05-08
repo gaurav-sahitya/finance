@@ -59,7 +59,7 @@
       </form>
     </div>
   </div>
-  <div class="col-12 col-lg-5">
+  <div class="col-12 col-lg-5 container">
     <div class="row mt-3 mb-2">
       <div class="col-9">
         <h3><%= txn[0].Type %></h3>
@@ -96,32 +96,36 @@
       <div class="<%-txn[4].Color%> col-3 fs-3 text-end fw-bold"><%= txn[4].Amount %></div>
     </div>
   </div>
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-5">
+    <div class="chart">
+      <ul class="numbers">
+        <li><span><%= max %></span></li>
+        <li><span><%= parseInt(max/2) %></span></li>
+        <li><span>0</span></li>
+      </ul>
+      <ul class="bars text-end">
+        <li>
+          <div class="bar" data-percentage="<%- bal_per[4] %>" data="<%- bal[4] %>"></div><span><%= txn[4].Date %></span>
+        </li>
+        <li>
+          <div class="bar" data-percentage="<%- bal_per[3] %>" data="<%- bal[3] %>"></div><span><%= txn[3].Date %></span>
+        </li>
+        <li>
+          <div class="bar" data-percentage="<%- bal_per[2] %>" data="<%- bal[2] %>"></div><span><%= txn[2].Date %></span>
+        </li>
+        <li>
+          <div class="bar" data-percentage="<%- bal_per[1] %>" data="<%- bal[1] %>"></div><span><%= txn[1].Date %></span>
+        </li>
+        <li>
+          <div class="bar" data-percentage="<%- bal_per[0] %>" data="<%- bal[0] %>"></div><span><%= txn[0].Date %></span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
   </div>
   <br><br>
-  <div class="chart">
-    <ul class="numbers">
-      <li><span>100%</span></li>
-      <li><span>50%</span></li>
-      <li><span>0%</span></li>
-    </ul>
-    <ul class="bars">
-      <li>
-        <div class="bar" data-percentage="50"></div><span>Option 01</span>
-      </li>
-      <li>
-        <div class="bar" data-percentage="30"></div><span>Option 02</span>
-      </li>
-      <li>
-        <div class="bar" data-percentage="60"></div><span>Option 03</span>
-      </li>
-      <li>
-        <div class="bar" data-percentage="100"></div><span>Option 04</span>
-      </li>
-      <li>
-        <div class="bar" data-percentage="80"></div><span>Option 05</span>
-      </li>
-    </ul>
-  </div>
   <!--chart end-->
 
   <script type="text/javascript">
@@ -156,7 +160,7 @@
     setTimeout(() => {
       a = document.getElementById("hide")
       a.innerHTML = ""
-    }, 3000)
+    }, 7000)
 
     update()
   </script>

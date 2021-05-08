@@ -1,17 +1,25 @@
+body{
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Roboto", sans-serif;
+  background: #333;
+}
+
 .chart{
-  width: 35rem;
+  width: 600px;
   height: 300px;
   display: block;
-  position: relative;
-  left: -1em;
-  margin-top: 50px;
 }
 
 .numbers{
-  color: #000;
+  color: #fff;
   margin: 0;
   padding: 0;
-  width: 3rem;
+  width: 50px;
   height: 100%;
   display: inline-block;
   float: left;
@@ -33,16 +41,16 @@
 }
 
 .bars{
-  color: #000;
+  color: #fff;
   font-size: 12px;
   font-weight: 600;
-  background: #fff;
+  background: #555;
   margin: 0;
   padding: 0;
   display: inline-block;
-  width: 32rem;
+  width: 500px;
   height: 300px;
-  box-shadow: 0 0 10px 0 #fff;
+  box-shadow: 0 0 10px 0 #555;
   border-radius: 5px;
 }
 
@@ -58,12 +66,11 @@
   position: absolute;
   bottom: -30px;
   text-align: center;
-  left: 0px;
 }
 
 .bars .bar{
   display: block;
-  background: #0d6efd;
+  background: #17C0EB;
   width: 50px;
   position: absolute;
   bottom: 0;
@@ -81,8 +88,9 @@
 }
 
 .bars .bar:before{
-  color: #000;
-  content: attr(data);
+  color: #fff;
+  content: attr(data-percentage) '%';
   position: relative;
   bottom: 20px;
 }
+      

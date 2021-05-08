@@ -16,11 +16,12 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 var clients = arrayfy(fs.readFileSync("./data/client.json", "utf8"))
 
-var index = fs.readFileSync("./index.html", "utf8")
+// var index = fs.readFileSync("./index.html", "utf8")
 
 
 var user
 var e_page
+var err
 
 const port = 3000
 
@@ -33,10 +34,11 @@ app.use(bodyParser.urlencoded({
 var error = false;
 
 app.get("/", (req, res) => {
-  if (!error) {
-    res.sendFile(__dirname + '/index.html')
+  if (!err) {
+    res.render("index",{warn: ""})
   } else {
-    res.send(index.replace("DISPLAY", ""))
+    err = false;
+    res.render("index",{warn: "Please Check Email or Password"})
   }
 })
 
@@ -48,7 +50,7 @@ app.post("/", (req, res) => {
       res.redirect("/page")
       return
     } else {
-      error = true;
+      err = true;
       res.redirect("/")
     }
 
@@ -60,11 +62,14 @@ app.get("/page", (req, res) => {
     let txns = arrayfy(fs.readFileSync(`./data/transactions/${user.email}.json`, "utf8"))
 
     var txn = []
+    var bal = []
+    var bal_per = []
 
     var len = txns.length
     var i
     var j
     var t
+    var max
 
     try{
       for (i = len-1; i>len-6; i--){
@@ -93,6 +98,7 @@ app.get("/page", (req, res) => {
           }
         }
         txn.push(t)
+        bal.push(txns[i].Balance)
       }
     }
     catch{
@@ -103,8 +109,16 @@ app.get("/page", (req, res) => {
           Date: ""
         }
         txn.push(t)
+        bal.push(0)
       }
     }
+
+    max = Math.max(bal[0],bal[1],bal[2],bal[3],bal[4])
+
+    for (var i = 0; i < bal.length; i++) {
+      bal_per.push(parseInt(bal[i]*100/max))
+    }
+
     if (user.status == "Enrolled") {
       res.render("page", {
         user: user,
@@ -112,7 +126,10 @@ app.get("/page", (req, res) => {
         type: "disabled",
         value: "Since you have Enrolled you can not Credit/Debit",
         val: "Thanks for Enrolling",
-        txn: txn
+        txn: txn,
+        max: max,
+        bal: bal,
+        bal_per: bal_per
       })
     } else {
       res.render("page", {
@@ -121,7 +138,10 @@ app.get("/page", (req, res) => {
         type: "",
         value: "Enter amount to Credit/Debit",
         val: "You Can Enroll Here",
-        txn: txn
+        txn: txn,
+        max: max,
+        bal: bal,
+        bal_per: bal_per
       })
     }
     e_page = ""
@@ -172,9 +192,6 @@ app.post("/txn", (req, res) => {
 })
 
 app.post("/enr", (req, res) => {
-
-  console.log(req.body)
-
   user.status = req.body.submit
 
   for (let i = 0; i < clients.length; i++) {
