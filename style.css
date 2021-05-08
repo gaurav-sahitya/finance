@@ -1,3 +1,7 @@
+.d{
+  display: hidden;
+}
+
 .chart{
   width: 600px;
   height: 300px;

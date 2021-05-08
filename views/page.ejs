@@ -9,6 +9,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="utf-8"></script>
   <title>The Earining App</title>
+  <style>
+    .m {
+      margin-top: -10px;
+    }
+
+    .pd {
+      padding: 0 0 0 0;
+    }
+  </style>
 
 
 </head>
@@ -26,74 +35,133 @@
         <h5>Credit Score</h5>
         <h2 id="c_Score_holder"><%= user.c_Score %></h2>
       </div>
-      <div class="col-lg-6 col-12">
+      <div class="col-lg-5 col-12">
         <form method="post" action="/txn">
           <div class="my-3 row">
             <label for="amount" class="form-label fs-3">Amount: <%= user.Balance %></label>
             <input type="hidden" name="c_Score" id="c_Score" value=<%-user.c_Score%>>
-            <input type="number" min="100" class="form-control" name="amount" required>
+            <input type="number py-2" min="100" required class="form-control" name="amount" placeholder='<%-value%>' <%-type%>>
             <small id="hide" class="text-danger my-1"><%= page %></small>
-            <button type="submit" name="submit" class="btn btn-warning col-6 my-3" value="Credit">Credit</button>
-            <button type="submit" name="submit" class="btn btn-danger col-6 my-3" value="Debit">Debit</button>
+            <button type="submit" name="submit" class="btn btn-warning col-6 mt-3 py-2" value="Credit" <%-type%>>Credit</button>
+            <button type="submit" name="submit" class="btn btn-danger col-6 mt-3 py-2" value="Debit" <%-type%>>Debit</button>
         </form>
       </div>
     </div>
-    <div class="chart col-lg-6 col-12">
-      <ul class="numbers">
-        <li><span>100%</span></li>
-        <li><span>50%</span></li>
-        <li><span>0%</span></li>
-      </ul>
-      <ul class="bars">
-        <li><div class="bar" data-percentage="50"></div><span>Option 01</span></li>
-        <li><div class="bar" data-percentage="30"></div><span>Option 02</span></li>
-        <li><div class="bar" data-percentage="60"></div><span>Option 03</span></li>
-        <li><div class="bar" data-percentage="100"></div><span>Option 04</span></li>
-        <li><div class="bar" data-percentage="80"></div><span>Option 05</span></li>
-      </ul>
-    </div>
-    <!--chart end-->
+    <div class="col-lg-2 col-12">
 
-    <script type="text/javascript">
-    $(function(){
-      $('.bars li .bar').each(function(key, bar){
+    </div>
+    <div class="col-lg-5 col-12">
+      <form method="post" action="/enr">
+        <br>
+        <div class="row">
+          <label class="form-label text-center fs-3 d-none d-lg-block py-2"><%=val%></label>
+          <button type="submit" name="submit" class="btn btn-primary fs-5 col-12 py-3 py-lg-4 mb-3 m" value="Enrolled" <%-type%>>Enroll Now </button>
+      </form>
+    </div>
+  </div>
+  <div class="col-12 col-lg-5">
+    <div class="row mt-3 mb-2">
+      <div class="col-9">
+        <h3><%= txn[0].Type %></h3>
+        <small><%= txn[0].Date %></small>
+      </div>
+      <div class="<%-txn[0].Color%> col-3 fs-3 text-end fw-bold"><%= txn[0].Amount %></div>
+    </div>
+    <div class="row mt-3 mb-2">
+      <div class="col-9">
+        <h3><%= txn[1].Type %></h3>
+        <small><%= txn[1].Date %></small>
+      </div>
+      <div class="<%-txn[1].Color%> col-3 fs-3 text-end fw-bold"><%= txn[1].Amount %></div>
+    </div>
+    <div class="row mt-3 mb-2">
+      <div class="col-9">
+        <h3><%= txn[2].Type %></h3>
+        <small><%= txn[2].Date %></small>
+      </div>
+      <div class="<%-txn[2].Color%> col-3 fs-3 text-end fw-bold"><%= txn[2].Amount %></div>
+    </div>
+    <div class="row mt-3 mb-2">
+      <div class="col-9">
+        <h3><%= txn[3].Type %></h3>
+        <small><%= txn[3].Date %></small>
+      </div>
+      <div class="<%-txn[3].Color%> col-3 fs-3 text-end fw-bold"><%= txn[3].Amount %></div>
+    </div>
+    <div class="row mt-3 mb-2">
+      <div class="col-9">
+        <h3><%= txn[4].Type %></h3>
+        <small><%= txn[4].Date %></small>
+      </div>
+      <div class="<%-txn[4].Color%> col-3 fs-3 text-end fw-bold"><%= txn[4].Amount %></div>
+    </div>
+  </div>
+  </div>
+  <br><br>
+  <div class="chart">
+    <ul class="numbers">
+      <li><span>100%</span></li>
+      <li><span>50%</span></li>
+      <li><span>0%</span></li>
+    </ul>
+    <ul class="bars">
+      <li>
+        <div class="bar" data-percentage="50"></div><span>Option 01</span>
+      </li>
+      <li>
+        <div class="bar" data-percentage="30"></div><span>Option 02</span>
+      </li>
+      <li>
+        <div class="bar" data-percentage="60"></div><span>Option 03</span>
+      </li>
+      <li>
+        <div class="bar" data-percentage="100"></div><span>Option 04</span>
+      </li>
+      <li>
+        <div class="bar" data-percentage="80"></div><span>Option 05</span>
+      </li>
+    </ul>
+  </div>
+  <!--chart end-->
+
+  <script type="text/javascript">
+    $(function() {
+      $('.bars li .bar').each(function(key, bar) {
         var percentage = $(this).data('percentage');
         $(this).animate({
-          'height' : percentage + '%'
-        },1000);
+          'height': percentage + '%'
+        }, 1000);
       });
     });
-    </script>
-    <script type="text/javascript">
-
-    function update(){
+  </script>
+  <script type="text/javascript">
+    function update() {
 
       var c_Score = document.getElementById("c_Score").value
       var element = document.getElementById("c_Score_holder")
 
       let color
 
-      if (c_Score >= 0.9){
+      if (c_Score >= 0.9) {
         color = "text-primary"
-      }
-      else if(c_Score >= 0.7){
+      } else if (c_Score >= 0.7) {
         color = "text-warning"
-      }
-      else{
+      } else {
         color = "text-danger"
       }
 
       element.classList.add(color)
     }
 
-    setTimeout(()=>{
-      document.getElementById("hide").style.display = "hidden"
+    setTimeout(() => {
+      a = document.getElementById("hide")
+      a.innerHTML = ""
     }, 3000)
 
     update()
-    </script>
+  </script>
   </div>
-</div>
+  </div>
 
   <br><br>
 

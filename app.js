@@ -3,20 +3,20 @@ const app = express()
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
-function arrayfy(json){
-  let array =[]
+function arrayfy(json) {
+  let array = []
   let obj = JSON.parse(json)
-  for (i=0; i< obj.length; i++){
+  for (i = 0; i < obj.length; i++) {
     array.push(obj[i])
   }
   return array
 }
 
-const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-var clients = JSON.parse(fs.readFileSync("./data/client.json","utf8"))
+var clients = arrayfy(fs.readFileSync("./data/client.json", "utf8"))
 
-var index = fs.readFileSync("./index.html","utf8")
+var index = fs.readFileSync("./index.html", "utf8")
 
 
 var user
@@ -24,30 +24,30 @@ var e_page
 
 const port = 3000
 
-app.set("view engine","ejs")
+app.set("view engine", "ejs")
 app.use(express.static(__dirname))
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({
+  extended: false
+}))
 
 var error = false;
 
 app.get("/", (req, res) => {
-  if (!error){
+  if (!error) {
     res.sendFile(__dirname + '/index.html')
-  }
-  else{
-    res.send(index.replace("DISPLAY",""))
+  } else {
+    res.send(index.replace("DISPLAY", ""))
   }
 })
 
 
-app.post("/", (req, res)=>{
+app.post("/", (req, res) => {
   clients.forEach((client, i) => {
-    if(client.email == req.body.email && client.password == req.body.password){
+    if (client.email == req.body.email && client.password == req.body.password) {
       user = client
       res.redirect("/page")
       return
-    }
-    else{
+    } else {
       error = true;
       res.redirect("/")
     }
@@ -55,32 +55,96 @@ app.post("/", (req, res)=>{
   });
 })
 
-app.get("/page", (req, res)=>{
-  if (user){
-    res.render("page",{user: user, page: e_page})
-    e_page=""
-  }
-  else{
+app.get("/page", (req, res) => {
+  if (user) {
+    let txns = arrayfy(fs.readFileSync(`./data/transactions/${user.email}.json`, "utf8"))
+
+    var txn = []
+
+    var len = txns.length
+    var i
+    var j
+    var t
+
+    try{
+      for (i = len-1; i>len-6; i--){
+        if (txns[i].Type=="Debit"){
+          t = {
+            Amount: "-"+txns[i].Amount,
+            Type: txns[i].Type,
+            Date: txns[i].Date,
+            Color: "text-danger"
+          }
+        }
+        else if (txns[i].Type=="Credit"){
+          t = {
+            Amount: "+"+txns[i].Amount,
+            Type: txns[i].Type,
+            Date: txns[i].Date,
+            Color: "text-success"
+          }
+        }
+        else{
+          t = {
+            Amount: "+"+txns[i].Amount,
+            Type: txns[i].Type,
+            Date: txns[i].Date,
+            Color: "text-primary"
+          }
+        }
+        txn.push(t)
+      }
+    }
+    catch{
+      for (j=i; j<5; j++){
+        t = {
+          Amount: "",
+          Type: "",
+          Date: ""
+        }
+        txn.push(t)
+      }
+    }
+    if (user.status == "Enrolled") {
+      res.render("page", {
+        user: user,
+        page: e_page,
+        type: "disabled",
+        value: "Since you have Enrolled you can not Credit/Debit",
+        val: "Thanks for Enrolling",
+        txn: txn
+      })
+    } else {
+      res.render("page", {
+        user: user,
+        page: e_page,
+        type: "",
+        value: "Enter amount to Credit/Debit",
+        val: "You Can Enroll Here",
+        txn: txn
+      })
+    }
+    e_page = ""
+  } else {
     res.redirect("/")
   }
 })
 
-app.post("/txn",(req, res)=>{
-  if (req.body.submit == "Credit"){
+app.post("/txn", (req, res) => {
+  if (req.body.submit == "Credit") {
     user.Balance += parseInt(req.body.amount)
-    user.c_Score = parseFloat(Math.min(0.99,(user.c_Score + parseInt(req.body.amount)/user.Balance)).toFixed(2))
-  }
-  else if(req.body.c_Score > 0.7 && req.body.amount < user.Balance - 1000){
-    user.c_Score = parseFloat(Math.max(0.01,(user.c_Score - parseInt(req.body.amount)/user.Balance)).toFixed(2))
+    user.c_Score = parseFloat(Math.min(0.99, (user.c_Score + parseInt(req.body.amount) / user.Balance)).toFixed(2))
+  } else if (req.body.c_Score > 0.7 && req.body.amount < user.Balance - 1000) {
+    user.c_Score = parseFloat(Math.max(0.01, (user.c_Score - parseInt(req.body.amount) / user.Balance)).toFixed(2))
     user.Balance -= parseInt(req.body.amount)
+  } else {
+    e_page = "We can't process, either you have exceed 1000 Rs limit or have Credit Score less than 0.7"
+    res.redirect("/page")
+    return
   }
-  else{
-    e_page= "We can't process, either you have exceed 1000 Rs limit or have Credit Score less than 0.7"
-  }
+  let date = new Date()
 
-  const date = new Date()
-
-  let txns = fs.readFileSync(`./data/transactions/${user.email}.json`,"utf8")
+  let txns = arrayfy(fs.readFileSync(`./data/transactions/${user.email}.json`, "utf8"))
 
 
   txn = {
@@ -92,17 +156,36 @@ app.post("/txn",(req, res)=>{
 
   txns.push(txn)
 
-  fs.writeFileSync(`./data/transactions/${user.email}.json`,JSON.stringify(txns))
+  fs.writeFileSync(`./data/transactions/${user.email}.json`, JSON.stringify(txns))
 
-  for (let i=0; i<clients.length; i++){
-    if (clients[i].email === user.email && clients[i].password === user.password){
+  for (let i = 0; i < clients.length; i++) {
+    if (clients[i].email === user.email && clients[i].password === user.password) {
       clients[i].Balance = user.Balance
       clients[i].c_Score = user.c_Score
       break
     }
   }
 
-  fs.writeFileSync("./data/client.json",JSON.stringify(clients))
+  fs.writeFileSync("./data/client.json", JSON.stringify(clients))
+
+  res.redirect("/page")
+})
+
+app.post("/enr", (req, res) => {
+
+  console.log(req.body)
+
+  user.status = req.body.submit
+
+  for (let i = 0; i < clients.length; i++) {
+    if (clients[i].email === user.email && clients[i].password === user.password) {
+      clients[i].status = user.status
+      break
+    }
+  }
+
+
+  fs.writeFileSync("./data/client.json", JSON.stringify(clients))
 
   res.redirect("/page")
 })
