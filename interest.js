@@ -1,5 +1,5 @@
 const rate_percent = 1
-const time = 1000
+const time = 10000
 const fs = require('fs')
 
 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
