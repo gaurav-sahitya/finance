@@ -1,7 +1,6 @@
 {
   "name": "finance",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -15,5 +14,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaurav-sahitya/finance.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gaurav-sahitya/finance/issues"
+  },
+  "homepage": "https://github.com/gaurav-sahitya/finance#readme",
+  "description": ""
 }
